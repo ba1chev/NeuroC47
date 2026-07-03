@@ -23,7 +23,7 @@ void pop_vector(vector_t* vector);
 void avx_256_vector_zero(vector_t* vector);
 void avx_256_vector_fill(vector_t* vector, const float value);
 
-// --- Elementwise arithmetic, vector op vector (out-of-place, writes `result`) ---
+// --- Elementwise arithmetic, vector op vector (out-of-place, writes "result") ---
 void avx_256_vector_add(const vector_t* __restrict left, const vector_t* __restrict right, vector_t* __restrict result);
 void avx_256_vector_sub(const vector_t* __restrict left, const vector_t* __restrict right, vector_t* __restrict result);
 void avx_256_vector_hadamard(const vector_t* __restrict left, const vector_t* __restrict right, vector_t* __restrict result);
@@ -34,7 +34,7 @@ void avx_256_vector_fma(const vector_t* __restrict a, const vector_t* __restrict
 void avx_256_vector_scalar_add(vector_t* __restrict vector, const float scalar);
 void avx_256_vector_scalar_mult(vector_t* __restrict vector, const float scalar);
 
-// --- Fused ops for training loops (in-place on `target`) ---
+// --- Fused ops for training loops (in-place on "target") ---
 void avx_256_vector_axpy(vector_t* __restrict target, const vector_t* __restrict source, const float scalar);
 
 // --- Elementwise unary math (in-place) ---
