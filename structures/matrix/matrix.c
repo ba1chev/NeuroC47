@@ -54,7 +54,6 @@ void copy_matrix(matrix_t* __restrict left_matrix, const matrix_t* __restrict ri
         copy_vector(left_matrix->data[i], right_matrix->data[i]);
     }
 }
-}
 
 void push_matrix(matrix_t* matrix, const vector_t* new_row) {
     if (!matrix || !new_row || !new_row->data) {
