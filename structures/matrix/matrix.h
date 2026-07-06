@@ -19,7 +19,7 @@ void pop_matrix(matrix_t* matrix);
 // Matrix operations
 matrix_t* matrix_multiplication(const matrix_t* __restrict left, const matrix_t* __restrict right);
 matrix_t* matrix_addition(const matrix_t* __restrict left, const matrix_t* __restrict right);
-matrix_t* matrix_devision(const matrix_t* __restrict left, const matrix_t* __restrict right);
 matrix_t* matrix_subtracting(const matrix_t* __restrict left, const matrix_t* __restrict right);
+matrix_t* matrix_transpose(const matrix_t* matrix);
 
 #endif
