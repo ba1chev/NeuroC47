@@ -1,6 +1,6 @@
 #include <math.h>
-#include <stdlib.h>
 #include <time.h>
+#include <stdlib.h>
 
 #include "network/layers/layer.h"
 
@@ -77,30 +77,30 @@ vector_t* layer_forward(const layer_t* layer, const vector_t* input) {
         errx(1, "Nullptr detected");
     }
 
-    vector_t* z = (vector_t*)malloc(sizeof(vector_t));
-    if (!z) {
+    vector_t* pre_activation_output = (vector_t*)malloc(sizeof(vector_t));
+    if (!pre_activation_output) {
         errx(1, "malloc failed");
     }
-    init_vector(z);
-    z->data = (float*)malloc(layer->weights->size * sizeof(float));
-    if (!z->data) {
+    init_vector(pre_activation_output);
+    pre_activation_output->data = (float*)malloc(layer->weights->size * sizeof(float));
+    if (!pre_activation_output->data) {
         errx(1, "malloc failed");
     }
-    z->size = layer->weights->size;
-    z->capacity = layer->weights->size;
+    pre_activation_output->size = layer->weights->size;
+    pre_activation_output->capacity = layer->weights->size;
 
     for (size_t i = 0; i < layer->weights->size; i++) {
-        z->data[i] = avx_256_vector_dot(layer->weights->data[i], input);
+        pre_activation_output->data[i] = avx_256_vector_dot(layer->weights->data[i], input);
     }
 
-    avx_256_vector_add(z, layer->biases, z);
+    avx_256_vector_add(pre_activation_output, layer->biases, pre_activation_output);
 
     if (layer->activation) {
-        vector_t* activated = layer->activation(z);
-        free_vector(z);
-        free(z);
+        vector_t* activated = layer->activation(pre_activation_output);
+        free_vector(pre_activation_output);
+        free(pre_activation_output);
         return activated;
     }
 
-    return z;
+    return pre_activation_output;
 }
