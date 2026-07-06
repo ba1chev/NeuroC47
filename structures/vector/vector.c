@@ -338,9 +338,9 @@ void avx_256_vector_axpy(
     __m256 scalar_avx_vector = _mm256_set1_ps(scalar);
 
     for (; current_index < simd_end; current_index += 8) {
-        __m256 src = _mm256_loadu_ps(&source->data[current_index]);
-        __m256 tgt = _mm256_loadu_ps(&target->data[current_index]);
-        _mm256_storeu_ps(&target->data[current_index], _mm256_fmadd_ps(scalar_avx_vector, src, tgt));
+        __m256 source_avx_vector = _mm256_loadu_ps(&source->data[current_index]);
+        __m256 target_avx_vector = _mm256_loadu_ps(&target->data[current_index]);
+        _mm256_storeu_ps(&target->data[current_index], _mm256_fmadd_ps(scalar_avx_vector, source_avx_vector, target_avx_vector));
     }
 
     for (; current_index < target->size; current_index++) {
@@ -421,8 +421,8 @@ void avx_256_vector_clip(vector_t* vector, const float min_value, const float ma
     size_t simd_end = vector->size & ~(size_t)7;
 
     for (; current_index < simd_end; current_index += 8) {
-        __m256 v = _mm256_loadu_ps(&vector->data[current_index]);
-        _mm256_storeu_ps(&vector->data[current_index], _mm256_min_ps(_mm256_max_ps(v, min_avx), max_avx));
+        __m256 current_avx_vector = _mm256_loadu_ps(&vector->data[current_index]);
+        _mm256_storeu_ps(&vector->data[current_index], _mm256_min_ps(_mm256_max_ps(current_avx_vector, min_avx), max_avx));
     }
 
     for (; current_index < vector->size; current_index++) {
@@ -455,13 +455,13 @@ void avx_256_vector_relu_derivative(vector_t* vector) {
     }
 
     __m256 zero = _mm256_setzero_ps();
-    __m256 one  = _mm256_set1_ps(1.0f);
+    __m256 one = _mm256_set1_ps(1.0f);
     size_t current_index = 0;
     size_t simd_end = vector->size & ~(size_t)7;
 
     for (; current_index < simd_end; current_index += 8) {
-        __m256 v    = _mm256_loadu_ps(&vector->data[current_index]);
-        __m256 mask = _mm256_cmp_ps(v, zero, _CMP_GT_OQ);
+        __m256 current_avx_vector = _mm256_loadu_ps(&vector->data[current_index]);
+        __m256 mask = _mm256_cmp_ps(current_avx_vector, zero, _CMP_GT_OQ);
         _mm256_storeu_ps(&vector->data[current_index], _mm256_and_ps(mask, one));
     }
 
@@ -481,10 +481,10 @@ void avx_256_vector_leaky_relu(vector_t* vector, const float alpha) {
     size_t simd_end = vector->size & ~(size_t)7;
 
     for (; current_index < simd_end; current_index += 8) {
-        __m256 v = _mm256_loadu_ps(&vector->data[current_index]);
-        __m256 mask = _mm256_cmp_ps(v, zero, _CMP_GT_OQ);
-        __m256 neg = _mm256_mul_ps(v, alpha_avx);
-        _mm256_storeu_ps(&vector->data[current_index], _mm256_blendv_ps(neg, v, mask));
+        __m256 current_avx_vector = _mm256_loadu_ps(&vector->data[current_index]);
+        __m256 mask = _mm256_cmp_ps(current_avx_vector, zero, _CMP_GT_OQ);
+        __m256 neg_avx_vector = _mm256_mul_ps(current_avx_vector, alpha_avx);
+        _mm256_storeu_ps(&vector->data[current_index], _mm256_blendv_ps(neg_avx_vector, current_avx_vector, mask));
     }
 
     for (; current_index < vector->size; current_index++) {
@@ -696,7 +696,7 @@ size_t avx_256_vector_argmax(const vector_t* vector) {
     }
 
     size_t best_index = 0;
-    float  best_value = vector->data[0];
+    float best_value = vector->data[0];
 
     for (size_t i = 1; i < vector->size; i++) {
         if (vector->data[i] > best_value) {
