@@ -83,3 +83,36 @@ void pop_matrix(matrix_t* matrix) {
     matrix->data[matrix->size - 1] = NULL;
     matrix->size -= 1;
 }
+
+matrix_t* matrix_multiplication(const matrix_t* __restrict left, const matrix_t* __restrict right) {
+    // todo
+}
+
+matrix_t* matrix_addition(const matrix_t* __restrict left, const matrix_t* __restrict right) {
+    if (!left || !right || !left->data || !right->data || left->size != right->size 
+        || left->data[0]->size != right->data[0]->size) {
+        errx(1, "Nullptr detected or not equal count of rows/cols");
+    }
+
+    size_t count_of_rows = left->size;
+    matrix_t* result = (matrix_t*)malloc(sizeof(matrix_t));
+    result->data = (vector_t**)malloc(count_of_rows * sizeof(vector_t*));
+    result->size = left->size;
+    result->capacity = left->capacity;
+
+    for (size_t i = 0; i < count_of_rows; i++) {
+        result->data[i] = (vector_t*)malloc(sizeof(vector_t));
+        init_vector(result->data[i]);
+        avx_256_vector_add(left->data[i], right->data[i], result->data[i]);
+    }
+    
+    return result;
+}
+
+matrix_t* matrix_devision(const matrix_t* __restrict left, const matrix_t* __restrict right) {
+    // todo
+}
+
+matrix_t* matrix_subtracting(const matrix_t* __restrict left, const matrix_t* __restrict right) {
+    // todo
+}
