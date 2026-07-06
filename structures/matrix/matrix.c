@@ -50,8 +50,9 @@ void push_matrix(matrix_t* matrix, const vector_t* new_row) {
     if (matrix->size == matrix->capacity) {
         size_t new_capacity = matrix->capacity == 0 ? 1 : matrix->capacity * 2;
         vector_t** new_data = (vector_t**)malloc(new_capacity * sizeof(vector_t*));
+        
         if (!new_data) {
-            errx(1, "malloc failed");
+            errx(1, "Malloc operation failed");
         }
 
         for (size_t i = 0; i < matrix->size; i++) {
