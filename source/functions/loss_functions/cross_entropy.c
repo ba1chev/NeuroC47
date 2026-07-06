@@ -19,9 +19,6 @@ float calculate_cross_entropy(const vector_t* predictions, const vector_t* y) {
     return loss;
 }
 
-// Combined softmax + cross-entropy delta: predictions - y
-// This is the gradient of cross-entropy w.r.t. the pre-softmax logits.
-// Use this as the initial delta in network_backward instead of (output - y).
 vector_t* cross_entropy_softmax_delta(const vector_t* predictions, const vector_t* y) {
     if (!predictions || !y || !predictions->data || !y->data || predictions->size != y->size) {
         errx(1, "Nullptr detected or size mismatch");
@@ -31,6 +28,7 @@ vector_t* cross_entropy_softmax_delta(const vector_t* predictions, const vector_
     if (!delta) {
         errx(1, "Malloc operation failed");
     }
+    
     init_vector(delta);
     copy_vector(delta, predictions);
     avx_256_vector_sub(delta, y, delta);
