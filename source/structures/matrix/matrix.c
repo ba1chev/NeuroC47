@@ -1,5 +1,5 @@
-#include "structures/matrix/matrix.h"
-#include "structures/vector/vector.h"
+#include "source/structures/matrix/matrix.h"
+#include "source/structures/vector/vector.h"
 
 void init_matrix(matrix_t* matrix) {
     if (!matrix) {

@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include "network/layers/layer.h"
+#include "source/network/layers/layer.h"
 
 layer_t* init_layer(size_t input_size, size_t output_size, function_t activation) {
     layer_t* layer = (layer_t*)malloc(sizeof(layer_t));

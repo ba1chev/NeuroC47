@@ -2,7 +2,7 @@
 #include <string.h>
 #include <immintrin.h>
 
-#include "structures/vector/vector.h"
+#include "source/structures/vector/vector.h"
 
 void init_vector(vector_t* vector) {
     if (!vector) {

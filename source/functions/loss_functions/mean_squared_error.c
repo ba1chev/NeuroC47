@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "functions/loss_functions/mean_squared_error.h"
+#include "source/functions/loss_functions/mean_squared_error.h"
 
 float calculate_mse(function_t fn_predicate, const vector_t* X, const vector_t* y) {
     if (!fn_predicate || !X || !y || !X->data || !y->data || X->size != y->size) {

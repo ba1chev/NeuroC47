@@ -1,8 +1,8 @@
 #ifndef DERIVATIVE_H
 #define DERIVATIVE_H
 
-#include "functions/function.h"
-#include "structures/vector/vector.h"
+#include "source/functions/function.h"
+#include "source/structures/vector/vector.h"
 
 typedef struct derivative_t {
     function_t function;

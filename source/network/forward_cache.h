@@ -1,7 +1,7 @@
 #ifndef FORWARD_CACHE_H
 #define FORWARD_CACHE_H
 
-#include "structures/vector/vector.h"
+#include "source/structures/vector/vector.h"
 
 typedef struct forward_cache_t {
     vector_t** activations;

@@ -1,7 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "structures/vector/vector.h"
+#include "source/structures/vector/vector.h"
 
 typedef struct matrix_t {
     vector_t** data;

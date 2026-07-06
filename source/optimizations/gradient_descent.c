@@ -1,4 +1,4 @@
-#include "optimizations/gradient_descent.h"
+#include "source/optimizations/gradient_descent.h"
 
 vector_t* calculate_gradient_descent(const gradient_descent_t* gd_optimizer, vector_t* X) {
     if (!gd_optimizer || !X || !X->data) {

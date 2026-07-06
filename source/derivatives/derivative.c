@@ -1,4 +1,4 @@
-#include "derivatives/derivative.h"
+#include "source/derivatives/derivative.h"
 
 vector_t* calculate_derivative_at(const derivative_t* derivative_obj, const vector_t* X) {
     if (!derivative_obj || !derivative_obj->function) {

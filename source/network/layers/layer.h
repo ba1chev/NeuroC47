@@ -1,9 +1,9 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include "functions/function.h"
-#include "structures/matrix/matrix.h"
-#include "structures/vector/vector.h"
+#include "source/functions/function.h"
+#include "source/structures/matrix/matrix.h"
+#include "source/structures/vector/vector.h"
 
 typedef struct layer_t {
     matrix_t* weights;

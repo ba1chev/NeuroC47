@@ -1,4 +1,4 @@
-#include "network/network.h"
+#include "source/network/network.h"
 
 network_t* init_network(size_t count_of_layers) {
     network_t* network = (network_t*)malloc(sizeof(network_t));

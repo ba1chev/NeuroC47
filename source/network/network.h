@@ -1,9 +1,9 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#include "network/layers/layer.h"
-#include "network/forward_cache.h"
-#include "functions/loss_functions/mean_squared_error.h"
+#include "source/network/layers/layer.h"
+#include "source/network/forward_cache.h"
+#include "source/functions/loss_functions/mean_squared_error.h"
 
 typedef struct network_t {
     layer_t** layers;
