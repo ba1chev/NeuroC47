@@ -28,18 +28,32 @@ void free_matrix(matrix_t* matrix) {
 }
 
 void copy_matrix(matrix_t* __restrict left_matrix, const matrix_t* __restrict right_matrix) {
-    if (!left_matrix || !right_matrix || !left_matrix->data || !right_matrix->data) {
+    if (!left_matrix || !right_matrix || !right_matrix->data) {
         errx(1, "Nullptr detected");
     }
 
-    if (left_matrix->size != right_matrix->size
-        || left_matrix->data[0]->size != right_matrix->data[0]->size) {
-        errx(1, "Not equal count of rows or not equal count of cols");
-    }
-
     for (size_t i = 0; i < left_matrix->size; i++) {
+        free_vector(left_matrix->data[i]);
+        free(left_matrix->data[i]);
+    }
+    free(left_matrix->data);
+
+    left_matrix->data = (vector_t**)malloc(right_matrix->size * sizeof(vector_t*));
+    if (!left_matrix->data) {
+        errx(1, "malloc failed");
+    }
+    left_matrix->size = right_matrix->size;
+    left_matrix->capacity = right_matrix->size;
+
+    for (size_t i = 0; i < right_matrix->size; i++) {
+        left_matrix->data[i] = (vector_t*)malloc(sizeof(vector_t));
+        if (!left_matrix->data[i]) {
+            errx(1, "malloc failed");
+        }
+        init_vector(left_matrix->data[i]);
         copy_vector(left_matrix->data[i], right_matrix->data[i]);
     }
+}
 }
 
 void push_matrix(matrix_t* matrix, const vector_t* new_row) {
