@@ -85,7 +85,55 @@ void pop_matrix(matrix_t* matrix) {
 }
 
 matrix_t* matrix_multiplication(const matrix_t* __restrict left, const matrix_t* __restrict right) {
-    // todo
+    if (!left || !right || !left->data || !right->data
+        || left->data[0]->size != right->size) {
+        errx(1, "Nullptr detected or invalid dims");
+    }
+
+    size_t count_of_rows = left->size;
+    size_t count_of_cols = right->data[0]->size;
+
+    matrix_t* result = (matrix_t*)malloc(sizeof(matrix_t));
+    if (!result) {
+        errx(1, "Malloc operation failed");
+    }
+
+    result->data = (vector_t**)malloc(count_of_rows * sizeof(vector_t*));
+    if (!result->data) {
+        errx(1, "Malloc operation failed");
+    }
+
+    result->size = count_of_rows;
+    result->capacity = count_of_rows;
+
+    for (size_t i = 0; i < count_of_rows; i++) {
+        result->data[i] = (vector_t*)malloc(sizeof(vector_t));
+        if (!result->data[i]) {
+            errx(1, "Malloc operation failed");
+        }
+
+        init_vector(result->data[i]);
+        result->data[i]->data = (float*)malloc(count_of_cols * sizeof(float));
+
+        if (!result->data[i]->data) {
+            errx(1, "Malloc operation failed");
+        }
+        result->data[i]->size = count_of_cols;
+        result->data[i]->capacity = count_of_cols;
+    }
+
+    matrix_t* right_T = matrix_transpose(right);
+
+    for (size_t i = 0; i < count_of_rows; i++) {
+        for (size_t j = 0; j < count_of_cols; j++) {
+            result->data[i]->data[j] = avx_256_vector_dot(left->data[i], right_T->data[j]);
+        }
+    }
+
+    free_matrix(right_T);
+    free(right_T);
+
+    return result;
 }
 
 matrix_t* matrix_addition(const matrix_t* __restrict left, const matrix_t* __restrict right) {
@@ -109,8 +157,48 @@ matrix_t* matrix_addition(const matrix_t* __restrict left, const matrix_t* __res
     return result;
 }
 
-matrix_t* matrix_devision(const matrix_t* __restrict left, const matrix_t* __restrict right) {
-    // todo
+matrix_t* matrix_transpose(const matrix_t* matrix) {
+    if (!matrix || !matrix->data) {
+        errx(1, "Nullptr detected");
+    }
+
+    size_t rows = matrix->size;
+    size_t cols = matrix->data[0]->size;
+
+    matrix_t* result = (matrix_t*)malloc(sizeof(matrix_t));
+    if (!result) {
+        errx(1, "malloc failed");
+    }
+
+    result->data = (vector_t**)malloc(cols * sizeof(vector_t*));
+    if (!result->data) {
+        errx(1, "malloc failed");
+    }
+
+    result->size = cols;
+    result->capacity = cols;
+
+    for (size_t j = 0; j < cols; j++) {
+        result->data[j] = (vector_t*)malloc(sizeof(vector_t));
+        if (!result->data[j]) {
+            errx(1, "malloc failed");
+        }
+
+        init_vector(result->data[j]);
+        result->data[j]->data = (float*)malloc(rows * sizeof(float));
+        if (!result->data[j]->data) {
+            errx(1, "malloc failed");
+        }
+        
+        result->data[j]->size = rows;
+        result->data[j]->capacity = rows;
+
+        for (size_t i = 0; i < rows; i++) {
+            result->data[j]->data[i] = matrix->data[i]->data[j];
+        }
+    }
+
+    return result;
 }
 
 matrix_t* matrix_subtracting(const matrix_t* __restrict left, const matrix_t* __restrict right) {
