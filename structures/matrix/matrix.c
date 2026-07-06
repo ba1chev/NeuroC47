@@ -162,38 +162,38 @@ matrix_t* matrix_transpose(const matrix_t* matrix) {
         errx(1, "Nullptr detected");
     }
 
-    size_t rows = matrix->size;
-    size_t cols = matrix->data[0]->size;
+    size_t count_of_rows = matrix->size;
+    size_t count_of_cols = matrix->data[0]->size;
 
     matrix_t* result = (matrix_t*)malloc(sizeof(matrix_t));
     if (!result) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
 
-    result->data = (vector_t**)malloc(cols * sizeof(vector_t*));
+    result->data = (vector_t**)malloc(count_of_cols * sizeof(vector_t*));
     if (!result->data) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
 
-    result->size = cols;
-    result->capacity = cols;
+    result->size = count_of_cols;
+    result->capacity = count_of_cols;
 
-    for (size_t j = 0; j < cols; j++) {
+    for (size_t j = 0; j < count_of_cols; j++) {
         result->data[j] = (vector_t*)malloc(sizeof(vector_t));
         if (!result->data[j]) {
-            errx(1, "malloc failed");
+            errx(1, "Malloc operation failed");
         }
 
         init_vector(result->data[j]);
-        result->data[j]->data = (float*)malloc(rows * sizeof(float));
+        result->data[j]->data = (float*)malloc(count_of_rows * sizeof(float));
         if (!result->data[j]->data) {
-            errx(1, "malloc failed");
+            errx(1, "Malloc operation failed");
         }
         
-        result->data[j]->size = rows;
-        result->data[j]->capacity = rows;
+        result->data[j]->size = count_of_rows;
+        result->data[j]->capacity = count_of_rows;
 
-        for (size_t i = 0; i < rows; i++) {
+        for (size_t i = 0; i < count_of_rows; i++) {
             result->data[j]->data[i] = matrix->data[i]->data[j];
         }
     }
