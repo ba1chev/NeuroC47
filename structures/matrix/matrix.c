@@ -122,16 +122,16 @@ matrix_t* matrix_multiplication(const matrix_t* __restrict left, const matrix_t*
         result->data[i]->capacity = count_of_cols;
     }
 
-    matrix_t* right_T = matrix_transpose(right);
+    matrix_t* right_transposed = matrix_transpose(right);
 
     for (size_t i = 0; i < count_of_rows; i++) {
         for (size_t j = 0; j < count_of_cols; j++) {
-            result->data[i]->data[j] = avx_256_vector_dot(left->data[i], right_T->data[j]);
+            result->data[i]->data[j] = avx_256_vector_dot(left->data[i], right_transposed->data[j]);
         }
     }
 
-    free_matrix(right_T);
-    free(right_T);
+    free_matrix(right_transposed);
+    free(right_transposed);
 
     return result;
 }
