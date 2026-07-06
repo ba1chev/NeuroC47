@@ -3,23 +3,24 @@
 #include <stdlib.h>
 
 #include "source/network/layers/layer.h"
+#include "source/network/forward_cache.h"
 
-layer_t* init_layer(size_t input_size, size_t output_size, function_t activation) {
+layer_t* init_layer(size_t input_size, size_t output_size, function_t activation, function_t activation_derivative) {
     layer_t* layer = (layer_t*)malloc(sizeof(layer_t));
     if (!layer) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
 
     float limit = 1.0f / sqrtf((float)input_size);
 
     layer->weights = (matrix_t*)malloc(sizeof(matrix_t));
     if (!layer->weights) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
     init_matrix(layer->weights);
     layer->weights->data = (vector_t**)malloc(output_size * sizeof(vector_t*));
     if (!layer->weights->data) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
     layer->weights->size = output_size;
     layer->weights->capacity = output_size;
@@ -27,12 +28,12 @@ layer_t* init_layer(size_t input_size, size_t output_size, function_t activation
     for (size_t i = 0; i < output_size; i++) {
         layer->weights->data[i] = (vector_t*)malloc(sizeof(vector_t));
         if (!layer->weights->data[i]) {
-            errx(1, "malloc failed");
+            errx(1, "Malloc operation failed");
         }
         init_vector(layer->weights->data[i]);
         layer->weights->data[i]->data = (float*)malloc(input_size * sizeof(float));
         if (!layer->weights->data[i]->data) {
-            errx(1, "malloc failed");
+            errx(1, "Malloc operation failed");
         }
         layer->weights->data[i]->size = input_size;
         layer->weights->data[i]->capacity = input_size;
@@ -45,17 +46,18 @@ layer_t* init_layer(size_t input_size, size_t output_size, function_t activation
 
     layer->biases = (vector_t*)malloc(sizeof(vector_t));
     if (!layer->biases) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
     init_vector(layer->biases);
     layer->biases->data = (float*)calloc(output_size, sizeof(float));
     if (!layer->biases->data) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
     layer->biases->size = output_size;
     layer->biases->capacity = output_size;
 
     layer->activation = activation;
+    layer->activation_derivative = activation_derivative;
 
     return layer;
 }
@@ -72,19 +74,19 @@ void free_layer(layer_t* layer) {
     free(layer);
 }
 
-vector_t* layer_forward(const layer_t* layer, const vector_t* input) {
-    if (!layer || !input || !input->data) {
+void layer_forward(const layer_t* layer, const vector_t* input, forward_cache_t* cache, size_t layer_index) {
+    if (!layer || !input || !input->data || !cache) {
         errx(1, "Nullptr detected");
     }
 
     vector_t* pre_activation_output = (vector_t*)malloc(sizeof(vector_t));
     if (!pre_activation_output) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
     init_vector(pre_activation_output);
     pre_activation_output->data = (float*)malloc(layer->weights->size * sizeof(float));
     if (!pre_activation_output->data) {
-        errx(1, "malloc failed");
+        errx(1, "Malloc operation failed");
     }
     pre_activation_output->size = layer->weights->size;
     pre_activation_output->capacity = layer->weights->size;
@@ -94,13 +96,12 @@ vector_t* layer_forward(const layer_t* layer, const vector_t* input) {
     }
 
     avx_256_vector_add(pre_activation_output, layer->biases, pre_activation_output);
+    cache->pre_activations[layer_index] = pre_activation_output;
 
     if (layer->activation) {
-        vector_t* activated = layer->activation(pre_activation_output);
-        free_vector(pre_activation_output);
-        free(pre_activation_output);
-        return activated;
+        cache->activations[layer_index] = layer->activation(pre_activation_output);
+    } else {
+        cache->activations[layer_index] = pre_activation_output;
+        cache->pre_activations[layer_index] = NULL;
     }
-
-    return pre_activation_output;
 }

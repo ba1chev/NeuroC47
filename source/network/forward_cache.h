@@ -5,6 +5,7 @@
 
 typedef struct forward_cache_t {
     vector_t** activations;
+    vector_t** pre_activations;
     size_t count;
 } forward_cache_t;
 
