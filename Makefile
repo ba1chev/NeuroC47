@@ -1,4 +1,4 @@
-CC     = gcc
+CC = gcc
 CFLAGS = -O2 -mavx2 -mfma -std=c11 -Wall -Wextra -I.
 TARGET = neuroc47
 
