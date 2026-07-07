@@ -14,12 +14,5 @@
 *.out
 a.out
 
-# Editor / IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
 # Debug
 *.dSYM/
