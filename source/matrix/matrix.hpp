@@ -21,6 +21,7 @@ public:
     Matrix<T>& operator += (const Matrix<T>& other);
     Matrix<T>& operator -= (const Matrix<T>& other);
 
+    Matrix transpose() const;
     size_t get_rows_count() const;
     size_t get_cols_count() const;
     const std::vector<std::vector<T>>& get_data() const;
@@ -187,6 +188,19 @@ Matrix<T>& Matrix<T>::operator -= (const Matrix<T>& other) {
     }
 
     return *this;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::transpose() const {
+    Matrix<T> result(this->count_of_cols, this->count_of_rows);
+
+    for (size_t i = 0; i < this->count_of_rows; i++) {
+        for (size_t j = 0; j < this->count_of_cols; j++) {
+            result[j][i] = this->data[i][j];
+        }
+    }
+    
+    return result;
 }
 
 template <class T>
